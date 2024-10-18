@@ -1,5 +1,4 @@
 import time
-k = 0b1100001111110000  # 16-bit key
 
 sBox = [0x9,0x4,0xA,0xB,
         0xD,0x1,0x8,0x5,
@@ -108,50 +107,43 @@ def add_round_key(s1, s2):
         #Add round keys in GF(2^4)
         return [i ^ j for i, j in zip(s1, s2)]
         
-def encrypt(plaintext):
+def encrypt(plaintext, keys):
    
-#### NEED TO FIL THIS IN########3
+   state = int_to_state(int(plaintext,2))
+   round1 = mix_columns(shift_rows(sub_nibbles(sBox, state)))
+   round1 = add_round_key(keys[1], round1)
+   round2 = shift_rows(sub_nibbles(sBox, round1))
+   round2 = add_round_key(keys[2], round2)
+   encrypted = state_to_int(round2)
 
-    return encrypted
+   return encrypted
 
 
-def decrypt(ciphertext):
-
-#### NEED TO FIL THIS IN########3
-
-    return decrypted
+def decrypt(ciphertext, keys):
+   
+   dstate = int_to_state(int(ciphertext,2))
+   dstate = add_round_key(keys[2], dstate)
+   dstate = sub_nibbles(sBoxI, shift_rows(dstate))
+   dstate = inverse_mix_columns(add_round_key(keys[1], dstate))
+   dstate = sub_nibbles(sBoxI, shift_rows(dstate))
+   decrypted = state_to_int(dstate)
+   
+   return decrypted
 
 
 ############################### Below is the encryption decryption process in steps ############################
+k = 0b1100001111110000  # 16-bit key
 
 plaintext = "0110111101101011"
-print(plaintext)
+print("Plaintext: ", plaintext)
 
-#Key Expansion
-rnd_keys = key_expansion(k)
-print(rnd_keys[0])
+encrypted_txt = "{:016b}".format(encrypt(plaintext,key_expansion(k)))
+print("Ciphertext:", encrypted_txt)
 
-#Encrypt
-#Add Key To Plaintext
-plaintext_int = int(plaintext,2)
-state = add_round_key(rnd_keys[0], int_to_state(plaintext_int))
-round1 = mix_columns(shift_rows(sub_nibbles(sBox, state)))
-round1 = add_round_key(rnd_keys[1], round1)
-round2 = shift_rows(sub_nibbles(sBox, round1))
-round2 = add_round_key(rnd_keys[2], round2)
-ciptext = state_to_int(round2)
+decrypted_txt = "{:016b}".format(decrypt(encrypted_txt,key_expansion(k)))
+print("Decrypted: ", decrypted_txt)
 
-print(bin(ciptext))
 
-#Decrypt
-dstate = add_round_key(rnd_keys[2], int_to_state(ciptext))
-dstate = sub_nibbles(sBoxI, shift_rows(dstate))
-dstate = inverse_mix_columns(add_round_key(rnd_keys[1], dstate))
-dstate = sub_nibbles(sBoxI, shift_rows(dstate))
-dstate = add_round_key(rnd_keys[0], dstate)
-decryptedtxt = state_to_int(dstate)
-print(dstate)
-print(bin(decryptedtxt))
 
  
 
