@@ -94,6 +94,15 @@ def mix_columns(state):
             state[2] ^ gf_mult(4, state[0]),
             state[3] ^ gf_mult(4, state[1]),
         ]
+
+def inverse_mix_columns(state):
+        #Inverse mix columns transformation on state matrix
+        return [
+            gf_mult(9, state[0]) ^ gf_mult(2, state[2]),
+            gf_mult(9, state[1]) ^ gf_mult(2, state[3]),
+            gf_mult(9, state[2]) ^ gf_mult(2, state[0]),
+            gf_mult(9, state[3]) ^ gf_mult(2, state[1]),
+        ]
     
 def add_round_key(s1, s2):
         #Add round keys in GF(2^4)
@@ -116,11 +125,13 @@ def decrypt(ciphertext):
 ############################### Below is the encryption decryption process in steps ############################
 
 plaintext = "0110111101101011"
+print(plaintext)
 
 #Key Expansion
 rnd_keys = key_expansion(k)
 print(rnd_keys[0])
 
+#Encrypt
 #Add Key To Plaintext
 plaintext_int = int(plaintext,2)
 state = add_round_key(rnd_keys[0], int_to_state(plaintext_int))
@@ -131,5 +142,16 @@ round2 = add_round_key(rnd_keys[2], round2)
 ciptext = state_to_int(round2)
 
 print(bin(ciptext))
+
+#Decrypt
+dstate = add_round_key(rnd_keys[2], int_to_state(ciptext))
+dstate = sub_nibbles(sBoxI, shift_rows(dstate))
+dstate = inverse_mix_columns(add_round_key(rnd_keys[1], dstate))
+dstate = sub_nibbles(sBoxI, shift_rows(dstate))
+dstate = add_round_key(rnd_keys[0], dstate)
+decryptedtxt = state_to_int(dstate)
+print(dstate)
+print(bin(decryptedtxt))
+
  
 
