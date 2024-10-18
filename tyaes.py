@@ -1,11 +1,6 @@
 import time
 k = 0b1100001111110000  # 16-bit key
 
-irdc_poly = [0, 0, 1, 0, 0, 1, 1]  # x^4+x+1
-const_mat = [[0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 1]]
-r_con_1 = [0, 0, 0, 1]  # round 1 const for key schedule
-r_con_2 = [0, 0, 1, 0]  # round 2 const for key schedule
-
 sBox = [0x9,0x4,0xA,0xB,
         0xD,0x1,0x8,0x5,
         0x6,0x2,0x0,0x3,
@@ -104,64 +99,19 @@ def add_round_key(s1, s2):
         #Add round keys in GF(2^4)
         return [i ^ j for i, j in zip(s1, s2)]
         
-def encryptAES(plaintext):
-    a = get2x2NibbleMatFromString(plaintext)
-    
+def encrypt(plaintext):
+   
+#### NEED TO FIL THIS IN########3
 
-    encryptedBin = ""
-
-    # --0
-    a = keyAddition(a, 0)
-
-    # --1
-    b = sub2x2(a)
-    c = shiftRow(b)
-    d = mixColumn(c)
-    e = keyAddition(d, 1)
-
-    # --2
-    f = sub2x2(e)
-    g = shiftRow(f)
-    # no mix column in last round
-    h = keyAddition(g, 2)
-
-    encryptedBin += getBinStringFromBinMat(h)
-
-    return encryptedBin
+    return encrypted
 
 
-def decryptAES(encrypted_message_bin):
-    decryptedBin = ""
+def decrypt(ciphertext):
 
-    x = get2x2NibbleMatFromString(encrypted_message_bin)
+#### NEED TO FIL THIS IN########3
 
-    # --2 in reverse
-    h = keyAddition(x, 2)
-    # no mix column
-    g = shiftRow(h)
-    f = sub2x2D(g)
+    return decrypted
 
-    # --1 in reverse
-    e = keyAddition(f, 1)
-    d = mixColumn(e)
-    c = shiftRow(d)
-    b = sub2x2D(c)
-
-    # --0
-    a = keyAddition(b, 0)
-
-    decryptedBin += getBinStringFromBinMat(a)
-
-    return decryptedBin
-
-def binary_to_ascii(binary_string):
-    ascii_string = ""
-    for i in range(0, len(binary_string), 8):
-        byte = binary_string[i:i+8]
-        decimal = int(byte, 2)
-        ascii_char = chr(decimal)
-        ascii_string += ascii_char
-    return ascii_string
 
 ############################### Below is the encryption decryption process in steps ############################
 
