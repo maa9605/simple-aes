@@ -28,6 +28,10 @@ def int_to_state(n):
         #Convert a 2-byte integer into a 4-element vector (state matrix)
         return [n >> 12 & 0xF, (n >> 4) & 0xF, (n >> 8) & 0xF, n & 0xF]
 
+def state_to_int(m):
+        #Convert a 4-element vector (state matrix) into 2-byte integer
+        return (m[0] << 12) + (m[2] << 8) + (m[1] << 4) + m[3]
+
 def key_expansion(key):
 
         # Round constants
@@ -49,7 +53,7 @@ def key_expansion(key):
             int_to_state((w[4] << 8) + w[5]),  # Round 2 key
         )
         
-def gf_mult(self, a, b):
+def gf_mult(a, b):
         #Galois field multiplication of a and b in GF(2^4) / x^4 + x + 1
 
         product = 0
@@ -159,19 +163,7 @@ def binary_to_ascii(binary_string):
         ascii_string += ascii_char
     return ascii_string
 
-
-def main():
-    plaintext = "0110111101101011"
-    encrypted_message_bin = encryptAES(plaintext)
-    decrypted_message_bin = decryptAES(encrypted_message_bin)
-
-    print("Plaintext:", plaintext)
-
-    print("Encrypted message (binary):", encrypted_message_bin)
-    print("Decrypted message (binary):", decrypted_message_bin)
-
-    decrypted_message_ascii = binary_to_ascii(decrypted_message_bin)
-    print("Decrypted message:", decrypted_message_ascii)
+############################### Below is the encryption decryption process in steps ############################
 
 plaintext = "0110111101101011"
 
@@ -182,7 +174,12 @@ print(rnd_keys[0])
 #Add Key To Plaintext
 plaintext_int = int(plaintext,2)
 state = add_round_key(rnd_keys[0], int_to_state(plaintext_int))
-state = sub_nibbles(sBox, state)
-print(state)
+round1 = mix_columns(shift_rows(sub_nibbles(sBox, state)))
+round1 = add_round_key(rnd_keys[1], round1)
+round2 = shift_rows(sub_nibbles(sBox, round1))
+round2 = add_round_key(rnd_keys[2], round2)
+ciptext = state_to_int(round2)
+
+print(bin(ciptext))
  
 

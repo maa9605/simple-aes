@@ -197,7 +197,8 @@ def keyAddition(a, round):
     ##returns result of this operation as 2D nibble list of int b
     keys = [[], [], []]
     keys[0] = get2x2NibbleMatrix(k)
-    # print(nibbleSub(keys[0][3]))
+    #print(get2x2NibbleMatrix(k))
+    #print(nibbleSub(keys[0][3]))
     keys[1].append(nibbleXOR(nibbleXOR(keys[0][0], nibbleSub(keys[0][3])), r_con_1))
     keys[1].append(nibbleXOR(keys[0][1], keys[1][0]))
     keys[1].append(nibbleXOR(keys[0][2], keys[1][1]))
@@ -217,6 +218,7 @@ def keyAddition(a, round):
 
 def encryptAES(plaintext):
     a = get2x2NibbleMatFromString(plaintext)
+    
 
     encryptedBin = ""
 
