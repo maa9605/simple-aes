@@ -133,7 +133,19 @@ def decrypt(ciphertext, keys):
 
 ############################### Below is the encryption decryption process in steps ############################
 k = 0b1100001111110000  # 16-bit key
+msgs = [ 39482, 29338,
+	 62190, 61127,
+	 45219, 48129, 
+	 21149, 11229,
+	 58311, 10238
+       ]
+       
+print("   Plaintext   " + "      " +"Ciphertext")       
 
+for i in msgs: 
+	print("{:016b}".format(i) + "  " + "{:016b}".format(encrypt("{:016b}".format(i),key_expansion(k))))
+
+''' For Testing Purposes Only 	 
 plaintext = "0110111101101011"
 print("Plaintext: ", plaintext)
 
@@ -142,7 +154,7 @@ print("Ciphertext:", encrypted_txt)
 
 decrypted_txt = "{:016b}".format(decrypt(encrypted_txt,key_expansion(k)))
 print("Decrypted: ", decrypted_txt)
-
+'''
 
 
  
