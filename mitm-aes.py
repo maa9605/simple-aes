@@ -149,7 +149,7 @@ def decrypt(ciphertext, keys):
    return decrypted
 
 
-############################### Below is the encryption decryption process in steps ############################
+############################### Cracked Tiny AES in O(n) time and O(3) space ############################
 k = 0b1100001111110000  # 16-bit key
 ptxt = ["1110001111000111","0111001010011010","1111001011101110","1110111011000111",
         "1011000010100011","1011110000000001","0101001010011101","0010101111011101",
@@ -164,11 +164,37 @@ ctxt = ["0010111011001100","0101011011100001","1000101110100111","00100001010011
 ptxts = []
 ctxts = []
 
-
+#Put Key/Cipher, Key/Plaintext combos into tuples then add them to an array
 for key in range(65536):
-	ptxts.append("{:016b}".format(onestep_encrypt(ptxt[0],int_to_state(key))))
-	ctxts.append("{:016b}".format(onestep_decrypt(ctxt[0],int_to_state(key))))
+	ptxts.append([key, "{:016b}".format(onestep_encrypt(ptxt[0],int_to_state(key)))])
+	ctxts.append([key, "{:016b}".format(onestep_decrypt(ctxt[0],int_to_state(key)))])
 
+#sort the arrays by the plaintext/ciphertext and then create a new array of only the key for that P/C
+sortedptxts = sorted(ptxts, key=lambda x: x[1])
+new_sort = [item[0] for item in sortedptxts]
+
+sortedctxts = sorted(ctxts, key=lambda x: x[1])
+new_sort2 = [item[0] for item in sortedctxts]
+
+#Zip together the sorted lists of keys
+keypairs = list(zip(new_sort, new_sort2))
+
+#iterate thru the list of paried keys to find the ones that work on multiple P/C
+for i, j in keypairs:
+	keys = [int_to_state(65513), int_to_state(keypairs[i][0]), int_to_state(keypairs[i][1])]
+	if "{:016b}".format(encrypt(ptxt[1],keys)) == ctxt[1] and "{:016b}".format(encrypt(ptxt[2],keys)) == ctxt[2]:
+				print("success:",keypairs[i][0],keypairs[i][1],)
+				skeys = keys
+				break
+				
+#test if the found keypair is produces the expected C 
+for p, q in enumerate(ptxt):
+	if "{:016b}".format(encrypt(ptxt[p],skeys)) == ctxt[p]:
+		print("Good Keys", p)
+		
+	
+'''
+THIS IS THE LONG LONG LONG WAY ITERATES THRU ALL POSSIBLE COMBINATIONS.
 #enumerate thru the plaing text and find where they intersect with ciphertext
 for i, j in enumerate(ptxts):
 	for x, y in enumerate(ctxts):
@@ -186,7 +212,7 @@ for i, j in enumerate(ptxts):
 for p, q in enumerate(ptxt):
 	if "{:016b}".format(encrypt(ptxt[p],skeys)) == ctxt[p]:
 		print("Good Keys", p)
-
+'''
 	       
 			
 		
