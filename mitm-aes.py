@@ -160,6 +160,7 @@ ctxt = ["0010111011001100","0101011011100001","1000101110100111","00100001010011
         "0010111011001100","1100000110111011"
        ]
 
+#create lists of every P+K -> C (for every key there is a ciphertext and a decrypted one)
 ptxts = []
 ctxts = []
 
@@ -168,17 +169,20 @@ for key in range(65536):
 	ptxts.append("{:016b}".format(onestep_encrypt(ptxt[0],int_to_state(key))))
 	ctxts.append("{:016b}".format(onestep_decrypt(ctxt[0],int_to_state(key))))
 
-temp2=[]
-
+#enumerate thru the plaing text and find where they intersect with ciphertext
 for i, j in enumerate(ptxts):
 	for x, y in enumerate(ctxts):
+	
+		#if the 1 round encrypted ciphertext matches the 1 round decrypted plaintext test with 2 P/C pairs
 		if j == y:
 			keys = [int_to_state(65513), int_to_state(i), int_to_state(x)]
+			
+			#if the pair produce the expected ciphertext from the key pairs save keys for testing as possible good keys 
 			if "{:016b}".format(encrypt(ptxt[1],keys)) == ctxt[1] and "{:016b}".format(encrypt(ptxt[2],keys)) == ctxt[2]:
 				print("success:",i,x,)
 				skeys = keys
 				break
-
+#test good keys
 for p, q in enumerate(ptxt):
 	if "{:016b}".format(encrypt(ptxt[p],skeys)) == ctxt[p]:
 		print("Good Keys", p)
