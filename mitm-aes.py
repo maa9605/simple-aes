@@ -1,5 +1,3 @@
-import time
-import numpy as np
 
 sBox = [0x9,0x4,0xA,0xB,
         0xD,0x1,0x8,0x5,
@@ -153,19 +151,40 @@ def decrypt(ciphertext, keys):
 
 ############################### Below is the encryption decryption process in steps ############################
 k = 0b1100001111110000  # 16-bit key
-ptxt = "1110001111000111"
-ctxt = "010111011001100"
+ptxt = ["1110001111000111","0111001010011010","1111001011101110","1110111011000111",
+        "1011000010100011","1011110000000001","0101001010011101","0010101111011101",
+        "1110001111000111","0010011111111110"
+       ]
+ctxt = ["0010111011001100","0101011011100001","1000101110100111","0010000101001100",
+        "1110000010000001","1101111011100110","0111011011100101","0011111010000111",
+        "0010111011001100","1100000110111011"
+       ]
 
 ptxts = []
 ctxts = []
 
 
 for key in range(65536):
-	ptxts.append("{:016b}".format(onestep_encrypt(ptxt,int_to_state(key))))
-	#ctxts.append(onestep_decrypt(ctxt,int_to_state(key)))
+	ptxts.append("{:016b}".format(onestep_encrypt(ptxt[0],int_to_state(key))))
+	ctxts.append("{:016b}".format(onestep_decrypt(ctxt[0],int_to_state(key))))
 
-for key in range(65536):
-	if "{:016b}".format(onestep_decrypt(ctxt,int_to_state(key))) == ptxts[key]:
-	   print(key)
+temp2=[]
+
+for i, j in enumerate(ptxts):
+	for x, y in enumerate(ctxts):
+		if j == y:
+			keys = [int_to_state(65513), int_to_state(i), int_to_state(x)]
+			if "{:016b}".format(encrypt(ptxt[1],keys)) == ctxt[1] and "{:016b}".format(encrypt(ptxt[2],keys)) == ctxt[2]:
+				print("success:",i,x,)
+				skeys = keys
+				break
+
+for p, q in enumerate(ptxt):
+	if "{:016b}".format(encrypt(ptxt[p],skeys)) == ctxt[p]:
+		print("Good Keys", p)
+
+	       
+			
+		
 	   
 
