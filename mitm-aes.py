@@ -159,8 +159,6 @@ ctxt = "010111011001100"
 ptxts = []
 ctxts = []
 
-#print("{:016b}".format(onestep_encrypt(ptxt,int_to_state(key))))
-#print("{:016b}".format(onestep_decrypt(ctxt,int_to_state(key))))
 
 for key in range(65536):
 	ptxts.append("{:016b}".format(onestep_encrypt(ptxt,int_to_state(key))))
@@ -170,23 +168,4 @@ for key in range(65536):
 	if "{:016b}".format(onestep_decrypt(ctxt,int_to_state(key))) == ptxts[key]:
 	   print(key)
 	   
-
-print(len(ptxts))
-print(len(ctxts))
-
-'''
-for i in msgs: 
-	print("{:016b}".format(i) + "  " + "{:016b}".format(encrypt("{:016b}".format(i),key_expansion(k))))
-
-####For Testing Purposes Only 	 
-plaintext = "0110111101101011"
-print("Plaintext: ", plaintext)
-
-encrypted_txt = "{:016b}".format(encrypt(plaintext,key_expansion(k)))
-print("Ciphertext:", encrypted_txt)
-
-decrypted_txt = "{:016b}".format(decrypt(encrypted_txt,key_expansion(k)))
-print("Decrypted: ", decrypted_txt)
-'''
- 
 
